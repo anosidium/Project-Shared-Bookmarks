@@ -33,5 +33,30 @@
         <input type="submit" value="Add Bookmark" />
       </div>
     </form>
+
+    <div class="bookmark-table">
+      <!-- Table header -->
+      <div class="bookmark-row header">
+        <div class="cell title">Title</div>
+        <div class="cell description">Description</div>
+        <div class="cell date">Date</div>
+        <div class="cell action">Copy</div>
+      </div>
+
+      <!-- Rows will be inserted here -->
+      <div id="bookmark-rows"></div>
+    </div>
+
+    <!-- Template (hidden) -->
+    <template id="bookmark-row-template">
+      <div class="bookmark-row">
+        <div class="cell title"></div>
+        <div class="cell description"></div>
+        <div class="cell date"></div>
+        <div class="cell action">
+          <button>Copy</button>
+        </div>
+      </div>
+    </template>
   </body>
 </html>
