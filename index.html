@@ -1,8 +1,62 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
+    <title>Shared Bookmarks</title>
+    <link href="style.css" rel="stylesheet" />
     <script type="module" src="script.js"></script>
   </head>
   <body>
+    <label for="user-select">Select a user:</label>
+    <select name="users">
+      <option value="">--Select a user--</option>
+    </select>
+
+    <form class="add-bookmark-form">
+      <p>Add Bookmark:</p>
+
+      <div class="form-row">
+        <label for="bookmark-url">URL:</label>
+        <input type="url" id="bookmark-url" required />
+      </div>
+
+      <div class="form-row">
+        <label for="bookmark-title">Title:</label>
+        <input type="text" id="bookmark-title" required />
+      </div>
+
+      <div class="form-row">
+        <label for="bookmark-description">Description:</label>
+        <input type="text" id="bookmark-description" />
+      </div>
+
+      <div class="form-actions">
+        <input type="submit" value="Add Bookmark" />
+      </div>
+    </form>
+
+    <div class="bookmark-table">
+      <!-- Table header -->
+      <div class="bookmark-row header">
+        <div class="cell title">Title</div>
+        <div class="cell description">Description</div>
+        <div class="cell date">Date</div>
+        <div class="cell action">Copy</div>
+      </div>
+
+      <!-- Rows will be inserted here -->
+      <div id="bookmark-rows"></div>
+    </div>
+
+    <!-- Template (hidden) -->
+    <template id="bookmark-row-template">
+      <div class="bookmark-row">
+        <div class="cell title"></div>
+        <div class="cell description"></div>
+        <div class="cell date"></div>
+        <div class="cell action">
+          <button>Copy</button>
+        </div>
+      </div>
+    </template>
   </body>
 </html>
