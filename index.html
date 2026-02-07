@@ -5,9 +5,25 @@
     <script type="module" src="script.js"></script>
   </head>
   <body>
-    <label for="user-select">Choose a user:</label>
+    <label for="user-select">Select a user:</label>
     <select name="users">
       <option value="">--Select a user--</option>
     </select>
+
+    <form action="" method="">
+      <div>
+        <p>Add Bookmark:</p>
+        <label for="bookmark-url">URL:</label>
+        <input type="url" name="bookmark-url" id="bookmark-url" required />
+
+        <label for="bookmark-title">Title:</label>
+        <input type="text" name="bookmark-title" id="bookmark-title" required />
+
+        <label for="bookmark-description">Description:</label>
+        <input type="text" name="bookmark-description" id="bookmark-description" />
+
+        <input type="submit" value="Add Bookmark" />
+      </div>
+    </form>
   </body>
 </html>
