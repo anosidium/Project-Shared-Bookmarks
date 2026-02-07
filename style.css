@@ -1,0 +1,25 @@
+.add-bookmark-form {
+    border: 1px solid;
+    padding: 10px;
+    width: fit-content;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-row label {
+    width: 100px;
+    text-align: right;
+}
+
+.form-row input {
+    flex: 1;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
