@@ -3,13 +3,10 @@
   <head>
     <title>Shared Bookmarks</title>
     <link href="style.css" rel="stylesheet" />
-    <script type="module" src="script.js"></script>
   </head>
   <body>
     <label for="user-select">Select a user:</label>
-    <select name="users">
-      <option value="">--Select a user--</option>
-    </select>
+    <select name="users" id="select-user"></select>
 
     <form class="add-bookmark-form">
       <p>Add Bookmark:</p>
@@ -58,5 +55,6 @@
         </div>
       </div>
     </template>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
