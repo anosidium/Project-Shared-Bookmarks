@@ -7,31 +7,31 @@
 import { getData, getUserIds, setData } from "./storage.js";
 
 window.onload = function () {
-  const users = getUserIds();
-  const select = document.getElementById("select-user");
+  const userIds = getUserIds();
+  const userSelect = document.getElementById("select-user");
   const rowsContainer = document.getElementById("bookmark-rows");
-  const template = this.document.getElementById("bookmark-row-template");
+  const rowTemplate = document.getElementById("bookmark-row-template");
+  const form = document.querySelector(".add-bookmark-form");
 
   let currentUserId = null;
 
-  select.innerHTML = '<option value="">Select a user</option>';
+  userSelect.innerHTML = '<option value="">Select a user</option>';
   function populateSelectMenu() {
-    users.forEach((id) => {
+    userIds.forEach((id) => {
       const options = document.createElement("option");
       options.value = id;
       options.textContent = `User ${id}`;
-      select.appendChild(options);
+      userSelect.appendChild(options);
     });
   }
   populateSelectMenu();
-  select.addEventListener("change", () => {
-    currentUserId = select.value;
+  userSelect.addEventListener("change", () => {
+    currentUserId = userSelect.value;
     rowsContainer.innerHTML = "";
     if (!currentUserId) return;
     renderBookmarkForUser(currentUserId);
   });
 
-  const form = document.querySelector(".add-bookmark-form");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -78,7 +78,7 @@ window.onload = function () {
     const bookmarks = getData(userId) || [];
     rowsContainer.innerHTML = "";
     bookmarks.forEach((bookmark) => {
-      renderBookmark(bookmark, rowsContainer, template);
+      renderBookmark(bookmark, rowsContainer, rowTemplate);
     });
   }
 };
