@@ -6,6 +6,14 @@
 
 import { getData, getUserIds, setData } from "./storage.js";
 
+function populateUserSelect(select, userIds) {
+  select.replaceChildren(new Option("Select a user", ""));
+
+  userIds.forEach((id) => {
+    select.add(new Option(`User ${id}`, id));
+  });
+}
+
 window.onload = function () {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
@@ -15,16 +23,10 @@ window.onload = function () {
 
   let currentUserId = null;
 
-  userSelect.innerHTML = '<option value="">Select a user</option>';
-  function populateSelectMenu() {
-    userIds.forEach((id) => {
-      const options = document.createElement("option");
-      options.value = id;
-      options.textContent = `User ${id}`;
-      userSelect.appendChild(options);
-    });
-  }
-  populateSelectMenu();
+  populateUserSelect(userSelect, userIds);
+
+  populateUserSelect();
+
   userSelect.addEventListener("change", () => {
     currentUserId = userSelect.value;
     rowsContainer.innerHTML = "";
