@@ -14,6 +14,20 @@ function populateUserSelect(select, userIds) {
   });
 }
 
+function readBookmarkFromForm() {
+  return {
+    url: document.getElementById("bookmark-url").value.trim(),
+    title: document.getElementById("bookmark-title").value.trim(),
+    description: document.getElementById("bookmark-description").value.trim(),
+    date: new Date().toLocaleDateString(),
+  };
+}
+
+function addBookmark(userId, bookmark) {
+  const bookmarks = getData(userId) || [];
+  setData(userId, [...bookmarks, bookmark]);
+}
+
 window.onload = function () {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
@@ -40,23 +54,14 @@ window.onload = function () {
     event.preventDefault();
 
     if (!currentUserId) {
-      alert("please select a user");
+      alert("Please select a user");
       return;
     }
 
-    const bookmark = {
-      url: document.getElementById("bookmark-url").value,
-      title: document.getElementById("bookmark-title").value,
-      description: document.getElementById("bookmark-description").value,
-      date: new Date().toLocaleDateString(),
-    };
+    const bookmark = readBookmarkFromForm();
+    addBookmark(currentUserId, bookmark);
 
-    const bookmarks = getData(currentUserId) || [];
-    bookmarks.push(bookmark);
-    setData(currentUserId, bookmarks);
-
-    renderBookmarkForUser(currentUserId);
-
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
     form.reset();
   });
 
