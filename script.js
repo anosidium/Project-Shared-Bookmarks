@@ -50,6 +50,15 @@ function createBookmarkRow(bookmark, rowTemplate) {
   return fragment;
 }
 
+async function copyUrlToClipboard(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    alert("URL copied to clipboard!");
+  } catch (error) {
+    console.error("Failed to copy URL", error);
+  }
+}
+
 window.onload = function () {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
