@@ -19,8 +19,18 @@ function readBookmarkFromForm() {
     url: document.getElementById("bookmark-url").value.trim(),
     title: document.getElementById("bookmark-title").value.trim(),
     description: document.getElementById("bookmark-description").value.trim(),
-    date: new Date().toLocaleDateString(),
+    createdAt: Date.now(),
   };
+}
+
+function updateNoBookmarksNotice(userId, bookmarkCount, noticeEl, userEl) {
+  if (bookmarkCount === 0) {
+    userEl.textContent = userId;
+    noticeEl.hidden = false;
+    return;
+  }
+
+  noticeEl.hidden = true;
 }
 
 function addBookmark(userId, bookmark) {
@@ -28,13 +38,16 @@ function addBookmark(userId, bookmark) {
   setData(userId, [...bookmarks, bookmark]);
 }
 
-function renderBookmarksForUser(userId, rowsContainer, rowTemplate) {
+function renderBookmarksForUser(userId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser) {
   const bookmarks = getData(userId) || [];
+  updateNoBookmarksNotice(userId, bookmarks.length, noBookmarksNotice, noBookmarksUser);
   rowsContainer.replaceChildren();
 
-  bookmarks.forEach((bookmark) => {
-    rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
-  });
+  [...bookmarks]
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .forEach((bookmark) => {
+      rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
+    });
 }
 
 function createBookmarkRow(bookmark, rowTemplate) {
@@ -45,12 +58,16 @@ function createBookmarkRow(bookmark, rowTemplate) {
   titleLink.href = bookmark.url;
 
   fragment.querySelector(".cell.description").textContent = bookmark.description;
-  fragment.querySelector(".cell.date").textContent = bookmark.date;
+  fragment.querySelector(".cell.date").textContent = formatTimestamp(bookmark.createdAt);
 
   const copyButton = fragment.querySelector(".cell.action button");
   copyButton.addEventListener("click", () => copyUrlToClipboard(bookmark.url));
 
   return fragment;
+}
+
+function formatTimestamp(timestampMs) {
+  return new Date(timestampMs).toLocaleString();
 }
 
 async function copyUrlToClipboard(url) {
@@ -66,6 +83,8 @@ window.addEventListener("load", () => {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
   const rowsContainer = document.getElementById("bookmark-rows");
+  const noBookmarksNotice = document.getElementById("no-bookmarks-notice");
+  const noBookmarksUser = document.getElementById("no-bookmarks-user");
   const rowTemplate = document.getElementById("bookmark-row-template");
   const form = document.querySelector(".add-bookmark-form");
 
@@ -77,9 +96,12 @@ window.addEventListener("load", () => {
     currentUserId = userSelect.value;
     rowsContainer.replaceChildren();
 
-    if (!currentUserId) return;
+    if (!currentUserId) {
+      noBookmarksNotice.hidden = true;
+      return;
+    }
 
-    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
   });
 
   form.addEventListener("submit", (event) => {
@@ -93,7 +115,7 @@ window.addEventListener("load", () => {
     const bookmark = readBookmarkFromForm();
     addBookmark(currentUserId, bookmark);
 
-    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
     form.reset();
   });
 });

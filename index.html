@@ -5,7 +5,7 @@
     <link href="style.css" rel="stylesheet" />
   </head>
   <body>
-    <label for="user-select">Select a user:</label>
+    <label for="select-user">Select a user:</label>
     <select name="users" id="select-user"></select>
 
     <form class="add-bookmark-form">
@@ -40,8 +40,13 @@
       <div class="bookmark-row header">
         <div class="cell title">Title</div>
         <div class="cell description">Description</div>
-        <div class="cell date">Date</div>
+        <div class="cell date">Timestamp</div>
         <div class="cell action">Copy</div>
+      </div>
+
+      <!-- Displays if the user has no bookmarks -->
+      <div id="no-bookmarks-notice" hidden>
+        <p>There are no bookmarks for user no. <span id="no-bookmarks-user"></span></p>
       </div>
 
       <!-- Rows will be inserted here -->
