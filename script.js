@@ -37,6 +37,19 @@ function renderBookmarksForUser(userId, rowsContainer, rowTemplate) {
   });
 }
 
+function createBookmarkRow(bookmark, rowTemplate) {
+  const fragment = rowTemplate.content.cloneNode(true);
+
+  fragment.querySelector(".cell.title").textContent = bookmark.title;
+  fragment.querySelector(".cell.description").textContent = bookmark.description;
+  fragment.querySelector(".cell.date").textContent = bookmark.date;
+
+  const copyButton = fragment.querySelector(".cell.action button");
+  copyButton.addEventListener("click", () => copyUrlToClipboard(bookmark.url));
+
+  return fragment;
+}
+
 window.onload = function () {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
@@ -73,22 +86,4 @@ window.onload = function () {
     renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
     form.reset();
   });
-
-  function renderBookmark(bookmark, container, template) {
-    const clone = template.content.cloneNode(true);
-
-    clone.querySelector(".cell.title").textContent = bookmark.title;
-    clone.querySelector(".cell.description").textContent = bookmark.description;
-    clone.querySelector(".cell.date").textContent = bookmark.date;
-
-    const copyButton = clone.querySelector(".cell.action button");
-    copyButton.addEventListener("click", () => {
-      navigator.clipboard
-        .writeText(bookmark.url)
-        .then(() => alert("URL copied to clipboard!"))
-        .catch((err) => console.error("Failed to copy URL", err));
-    });
-
-    container.appendChild(clone);
-  }
 };
