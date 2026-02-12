@@ -58,7 +58,7 @@ function createBookmarkRow(bookmark, rowTemplate) {
   titleLink.href = bookmark.url;
 
   fragment.querySelector(".cell.description").textContent = bookmark.description;
-  fragment.querySelector(".cell.date").textContent = bookmark.date;
+  fragment.querySelector(".cell.date").textContent = formatTimestamp(bookmark.createdAt);
 
   const copyButton = fragment.querySelector(".cell.action button");
   copyButton.addEventListener("click", () => copyUrlToClipboard(bookmark.url));
