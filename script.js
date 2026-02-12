@@ -20,6 +20,7 @@ function readBookmarkFromForm() {
     title: document.getElementById("bookmark-title").value.trim(),
     description: document.getElementById("bookmark-description").value.trim(),
     createdAt: Date.now(),
+    likeCount: 0,
   };
 }
 
@@ -38,9 +39,20 @@ function addBookmark(userId, bookmark) {
   setData(userId, [...bookmarks, bookmark]);
 }
 
-function renderBookmarksForUser(userId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser) {
+function renderBookmarksForUser(
+  userId,
+  rowsContainer,
+  rowTemplate,
+  noBookmarksNotice,
+  noBookmarksUser,
+) {
   const bookmarks = getData(userId) || [];
-  updateNoBookmarksNotice(userId, bookmarks.length, noBookmarksNotice, noBookmarksUser);
+  updateNoBookmarksNotice(
+    userId,
+    bookmarks.length,
+    noBookmarksNotice,
+    noBookmarksUser,
+  );
   rowsContainer.replaceChildren();
 
   [...bookmarks]
@@ -57,11 +69,45 @@ function createBookmarkRow(bookmark, rowTemplate) {
   titleLink.textContent = bookmark.title;
   titleLink.href = bookmark.url;
 
-  fragment.querySelector(".cell.description").textContent = bookmark.description;
-  fragment.querySelector(".cell.date").textContent = formatTimestamp(bookmark.createdAt);
+  fragment.querySelector(".cell.description").textContent =
+    bookmark.description;
+  fragment.querySelector(".cell.date").textContent = formatTimestamp(
+    bookmark.createdAt,
+  );
 
   const copyButton = fragment.querySelector(".cell.action button");
   copyButton.addEventListener("click", () => copyUrlToClipboard(bookmark.url));
+
+  const heart = fragment.querySelector(".heart");
+
+  const countSpan = fragment.querySelector(".count");
+
+  countSpan.textContent = bookmark.likeCount || 0;
+
+  heart.addEventListener("click", () => {
+    const userId = document.getElementById("select-user").value;
+    const bookmarks = getData(userId) || [];
+    const index = bookmarks.findIndex(
+      (b) => b.createdAt === bookmark.createdAt,
+    );
+    if (index !== -1) {
+      bookmarks[index].likeCount = (bookmarks[index].likeCount || 0) + 1;
+    }
+    setData(userId, bookmarks);
+
+    const rowsContainer = document.getElementById("bookmark-rows");
+    const rowTemplate = document.getElementById("bookmark-row-template");
+    const noBookmarksNotice = document.getElementById("no-bookmarks-notice");
+    const noBookmarksUser = document.getElementById("no-bookmarks-user");
+
+    renderBookmarksForUser(
+      userId,
+      rowsContainer,
+      rowTemplate,
+      noBookmarksNotice,
+      noBookmarksUser,
+    );
+  });
 
   return fragment;
 }
@@ -101,7 +147,13 @@ window.addEventListener("load", () => {
       return;
     }
 
-    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
+    renderBookmarksForUser(
+      currentUserId,
+      rowsContainer,
+      rowTemplate,
+      noBookmarksNotice,
+      noBookmarksUser,
+    );
   });
 
   form.addEventListener("submit", (event) => {
@@ -115,7 +167,13 @@ window.addEventListener("load", () => {
     const bookmark = readBookmarkFromForm();
     addBookmark(currentUserId, bookmark);
 
-    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
+    renderBookmarksForUser(
+      currentUserId,
+      rowsContainer,
+      rowTemplate,
+      noBookmarksNotice,
+      noBookmarksUser,
+    );
     form.reset();
   });
 });
