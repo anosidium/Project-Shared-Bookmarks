@@ -28,6 +28,15 @@ function addBookmark(userId, bookmark) {
   setData(userId, [...bookmarks, bookmark]);
 }
 
+function renderBookmarksForUser(userId, rowsContainer, rowTemplate) {
+  const bookmarks = getData(userId) || [];
+  rowsContainer.replaceChildren();
+
+  bookmarks.forEach((bookmark) => {
+    rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
+  });
+}
+
 window.onload = function () {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
@@ -81,13 +90,5 @@ window.onload = function () {
     });
 
     container.appendChild(clone);
-  }
-
-  function renderBookmarkForUser(userId) {
-    const bookmarks = getData(userId) || [];
-    rowsContainer.innerHTML = "";
-    bookmarks.forEach((bookmark) => {
-      renderBookmark(bookmark, rowsContainer, rowTemplate);
-    });
   }
 };
