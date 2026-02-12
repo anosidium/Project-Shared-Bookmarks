@@ -96,7 +96,10 @@ window.addEventListener("load", () => {
     currentUserId = userSelect.value;
     rowsContainer.replaceChildren();
 
-    if (!currentUserId) return;
+    if (!currentUserId) {
+      noBookmarksNotice.hidden = true;
+      return;
+    }
 
     renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
   });
