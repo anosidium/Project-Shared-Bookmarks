@@ -23,13 +23,24 @@ function readBookmarkFromForm() {
   };
 }
 
+function updateNoBookmarksNotice(userId, bookmarkCount, noticeEl, userEl) {
+  if (bookmarkCount === 0) {
+    userEl.textContent = userId;
+    noticeEl.hidden = false;
+    return;
+  }
+
+  noticeEl.hidden = true;
+}
+
 function addBookmark(userId, bookmark) {
   const bookmarks = getData(userId) || [];
   setData(userId, [...bookmarks, bookmark]);
 }
 
-function renderBookmarksForUser(userId, rowsContainer, rowTemplate) {
+function renderBookmarksForUser(userId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser) {
   const bookmarks = getData(userId) || [];
+  updateNoBookmarksNotice(userId, bookmarks.length, noBookmarksNotice, noBookmarksUser);
   rowsContainer.replaceChildren();
 
   bookmarks.forEach((bookmark) => {
@@ -66,6 +77,8 @@ window.addEventListener("load", () => {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
   const rowsContainer = document.getElementById("bookmark-rows");
+  const noBookmarksNotice = document.getElementById("no-bookmarks-notice");
+  const noBookmarksUser = document.getElementById("no-bookmarks-user");
   const rowTemplate = document.getElementById("bookmark-row-template");
   const form = document.querySelector(".add-bookmark-form");
 
@@ -79,7 +92,7 @@ window.addEventListener("load", () => {
 
     if (!currentUserId) return;
 
-    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
   });
 
   form.addEventListener("submit", (event) => {
@@ -93,7 +106,7 @@ window.addEventListener("load", () => {
     const bookmark = readBookmarkFromForm();
     addBookmark(currentUserId, bookmark);
 
-    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate, noBookmarksNotice, noBookmarksUser);
     form.reset();
   });
 });
