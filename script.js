@@ -59,7 +59,7 @@ async function copyUrlToClipboard(url) {
   }
 }
 
-window.onload = function () {
+window.addEventListener("load", () => {
   const userIds = getUserIds();
   const userSelect = document.getElementById("select-user");
   const rowsContainer = document.getElementById("bookmark-rows");
@@ -93,4 +93,4 @@ window.onload = function () {
     renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
     form.reset();
   });
-};
+});
