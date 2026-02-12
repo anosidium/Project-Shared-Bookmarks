@@ -40,7 +40,10 @@ function renderBookmarksForUser(userId, rowsContainer, rowTemplate) {
 function createBookmarkRow(bookmark, rowTemplate) {
   const fragment = rowTemplate.content.cloneNode(true);
 
-  fragment.querySelector(".cell.title").textContent = bookmark.title;
+  const titleLink = fragment.querySelector(".cell.title");
+  titleLink.textContent = bookmark.title;
+  titleLink.href = bookmark.url;
+
   fragment.querySelector(".cell.description").textContent = bookmark.description;
   fragment.querySelector(".cell.date").textContent = bookmark.date;
 
