@@ -66,11 +66,9 @@ window.onload = function () {
   const rowTemplate = document.getElementById("bookmark-row-template");
   const form = document.querySelector(".add-bookmark-form");
 
-  let currentUserId = null;
+  let currentUserId = "";
 
   populateUserSelect(userSelect, userIds);
-
-  populateUserSelect();
 
   userSelect.addEventListener("change", () => {
     currentUserId = userSelect.value;
