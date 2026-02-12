@@ -43,9 +43,11 @@ function renderBookmarksForUser(userId, rowsContainer, rowTemplate, noBookmarksN
   updateNoBookmarksNotice(userId, bookmarks.length, noBookmarksNotice, noBookmarksUser);
   rowsContainer.replaceChildren();
 
-  bookmarks.forEach((bookmark) => {
-    rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
-  });
+  [...bookmarks]
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .forEach((bookmark) => {
+      rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
+    });
 }
 
 function createBookmarkRow(bookmark, rowTemplate) {
