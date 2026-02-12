@@ -6,79 +6,94 @@
 
 import { getData, getUserIds, setData } from "./storage.js";
 
-window.onload = function () {
-  const users = getUserIds();
-  const select = document.getElementById("select-user");
-  const rowsContainer = document.getElementById("bookmark-rows");
-  const template = this.document.getElementById("bookmark-row-template");
+function populateUserSelect(select, userIds) {
+  select.replaceChildren(new Option("Select a user", ""));
 
-  let currentUserId = null;
+  userIds.forEach((id) => {
+    select.add(new Option(`User ${id}`, id));
+  });
+}
 
-  select.innerHTML = '<option value="">Select a user</option>';
-  function populateSelectMenu() {
-    users.forEach((id) => {
-      const options = document.createElement("option");
-      options.value = id;
-      options.textContent = `User ${id}`;
-      select.appendChild(options);
-    });
+function readBookmarkFromForm() {
+  return {
+    url: document.getElementById("bookmark-url").value.trim(),
+    title: document.getElementById("bookmark-title").value.trim(),
+    description: document.getElementById("bookmark-description").value.trim(),
+    date: new Date().toLocaleDateString(),
+  };
+}
+
+function addBookmark(userId, bookmark) {
+  const bookmarks = getData(userId) || [];
+  setData(userId, [...bookmarks, bookmark]);
+}
+
+function renderBookmarksForUser(userId, rowsContainer, rowTemplate) {
+  const bookmarks = getData(userId) || [];
+  rowsContainer.replaceChildren();
+
+  bookmarks.forEach((bookmark) => {
+    rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
+  });
+}
+
+function createBookmarkRow(bookmark, rowTemplate) {
+  const fragment = rowTemplate.content.cloneNode(true);
+
+  const titleLink = fragment.querySelector(".cell.title");
+  titleLink.textContent = bookmark.title;
+  titleLink.href = bookmark.url;
+
+  fragment.querySelector(".cell.description").textContent = bookmark.description;
+  fragment.querySelector(".cell.date").textContent = bookmark.date;
+
+  const copyButton = fragment.querySelector(".cell.action button");
+  copyButton.addEventListener("click", () => copyUrlToClipboard(bookmark.url));
+
+  return fragment;
+}
+
+async function copyUrlToClipboard(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    alert("URL copied to clipboard!");
+  } catch (error) {
+    console.error("Failed to copy URL", error);
   }
-  populateSelectMenu();
-  select.addEventListener("change", () => {
-    currentUserId = select.value;
-    rowsContainer.innerHTML = "";
+}
+
+window.addEventListener("load", () => {
+  const userIds = getUserIds();
+  const userSelect = document.getElementById("select-user");
+  const rowsContainer = document.getElementById("bookmark-rows");
+  const rowTemplate = document.getElementById("bookmark-row-template");
+  const form = document.querySelector(".add-bookmark-form");
+
+  let currentUserId = "";
+
+  populateUserSelect(userSelect, userIds);
+
+  userSelect.addEventListener("change", () => {
+    currentUserId = userSelect.value;
+    rowsContainer.replaceChildren();
+
     if (!currentUserId) return;
-    renderBookmarkForUser(currentUserId);
+
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
   });
 
-  const form = document.querySelector(".add-bookmark-form");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
     if (!currentUserId) {
-      alert("please select a user");
+      alert("Please select a user");
       return;
     }
 
-    const bookmark = {
-      url: document.getElementById("bookmark-url").value,
-      title: document.getElementById("bookmark-title").value,
-      description: document.getElementById("bookmark-description").value,
-      date: new Date().toLocaleDateString(),
-    };
+    const bookmark = readBookmarkFromForm();
+    addBookmark(currentUserId, bookmark);
 
-    const bookmarks = getData(currentUserId) || [];
-    bookmarks.push(bookmark);
-    setData(currentUserId, bookmarks);
-
-    renderBookmarkForUser(currentUserId);
-
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
     form.reset();
   });
-
-  function renderBookmark(bookmark, container, template) {
-    const clone = template.content.cloneNode(true);
-
-    clone.querySelector(".cell.title").textContent = bookmark.title;
-    clone.querySelector(".cell.description").textContent = bookmark.description;
-    clone.querySelector(".cell.date").textContent = bookmark.date;
-
-    const copyButton = clone.querySelector(".cell.action button");
-    copyButton.addEventListener("click", () => {
-      navigator.clipboard
-        .writeText(bookmark.url)
-        .then(() => alert("URL copied to clipboard!"))
-        .catch((err) => console.error("Failed to copy URL", err));
-    });
-
-    container.appendChild(clone);
-  }
-
-  function renderBookmarkForUser(userId) {
-    const bookmarks = getData(userId) || [];
-    rowsContainer.innerHTML = "";
-    bookmarks.forEach((bookmark) => {
-      renderBookmark(bookmark, rowsContainer, template);
-    });
-  }
-};
+});

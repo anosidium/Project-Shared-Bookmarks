@@ -13,17 +13,21 @@
 
       <div class="form-row">
         <label for="bookmark-url">URL:</label>
-        <input type="url" id="bookmark-url" required />
+        <input type="url" id="bookmark-url" placeholder="https://www.google.co.uk/" required />
       </div>
 
       <div class="form-row">
         <label for="bookmark-title">Title:</label>
-        <input type="text" id="bookmark-title" required />
+        <input type="text" id="bookmark-title" placeholder="Google UK" required />
       </div>
 
       <div class="form-row">
         <label for="bookmark-description">Description:</label>
-        <input type="text" id="bookmark-description" />
+        <textarea
+          id="bookmark-description"
+          rows="4"
+          placeholder="Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking..."
+        ></textarea>
       </div>
 
       <div class="form-actions">
@@ -47,11 +51,11 @@
     <!-- Template (hidden) -->
     <template id="bookmark-row-template">
       <div class="bookmark-row">
-        <div class="cell title"></div>
+        <a class="cell title" href="" target="_blank" rel="noopener noreferrer"></a>
         <div class="cell description"></div>
         <div class="cell date"></div>
         <div class="cell action">
-          <button>Copy</button>
+          <button type="button">Copy</button>
         </div>
       </div>
     </template>
