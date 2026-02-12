@@ -64,6 +64,10 @@ function createBookmarkRow(bookmark, rowTemplate) {
   return fragment;
 }
 
+function formatTimestamp(timestampMs) {
+  return new Date(timestampMs).toLocaleString();
+}
+
 async function copyUrlToClipboard(url) {
   try {
     await navigator.clipboard.writeText(url);
