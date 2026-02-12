@@ -29,9 +29,11 @@ window.onload = function () {
 
   userSelect.addEventListener("change", () => {
     currentUserId = userSelect.value;
-    rowsContainer.innerHTML = "";
+    rowsContainer.replaceChildren();
+
     if (!currentUserId) return;
-    renderBookmarkForUser(currentUserId);
+
+    renderBookmarksForUser(currentUserId, rowsContainer, rowTemplate);
   });
 
   form.addEventListener("submit", (event) => {
