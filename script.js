@@ -19,7 +19,7 @@ function readBookmarkFromForm() {
     url: document.getElementById("bookmark-url").value.trim(),
     title: document.getElementById("bookmark-title").value.trim(),
     description: document.getElementById("bookmark-description").value.trim(),
-    date: new Date().toLocaleDateString(),
+    createdAt: Date.now(),
   };
 }
 
