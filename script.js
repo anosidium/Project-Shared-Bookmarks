@@ -55,11 +55,9 @@ function renderBookmarksForUser(
   );
   rowsContainer.replaceChildren();
 
-  [...bookmarks]
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .forEach((bookmark) => {
-      rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
-    });
+  sortBookmarksByDate(bookmarks).forEach((bookmark) => {
+    rowsContainer.appendChild(createBookmarkRow(bookmark, rowTemplate));
+  });
 }
 
 function createBookmarkRow(bookmark, rowTemplate) {
@@ -87,13 +85,8 @@ function createBookmarkRow(bookmark, rowTemplate) {
   heart.addEventListener("click", () => {
     const userId = document.getElementById("select-user").value;
     const bookmarks = getData(userId) || [];
-    const index = bookmarks.findIndex(
-      (b) => b.createdAt === bookmark.createdAt,
-    );
-    if (index !== -1) {
-      bookmarks[index].likeCount = (bookmarks[index].likeCount || 0) + 1;
-    }
-    setData(userId, bookmarks);
+    const updated = incrementLikeCount(bookmarks, bookmark.createdAt);
+    setData(userId, updated);
 
     const rowsContainer = document.getElementById("bookmark-rows");
     const rowTemplate = document.getElementById("bookmark-row-template");
@@ -123,6 +116,22 @@ async function copyUrlToClipboard(url) {
   } catch (error) {
     console.error("Failed to copy URL", error);
   }
+}
+
+export function sortBookmarksByDate(bookmark) {
+  return [...bookmark].sort((a, b) => b.createdAt - a.createdAt);
+}
+
+export function incrementLikeCount(bookmarks, createdAt) {
+  return bookmarks.map((bookmark) => {
+    if (bookmark.createdAt === createdAt) {
+      return {
+        ...bookmark,
+        likeCount: (bookmark.likeCount || 0) + 1,
+      };
+    }
+    return bookmark;
+  });
 }
 
 window.addEventListener("load", () => {
